@@ -1,12 +1,12 @@
 {
   "name": "cli-comics",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "repository": "https://github.com/deptno/cli-comics.git",
   "author": "deptno@gmail.com",
   "license": "MIT",
   "bin": {
-    "cli-comics": "index.js"
+    "cli-comics": "bin/cli-comics.js"
   },
   "devDependencies": {
     "typescript": "^2.3.2"
