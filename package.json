@@ -5,6 +5,9 @@
   "repository": "https://github.com/deptno/cli-comics.git",
   "author": "deptno@gmail.com",
   "license": "MIT",
+  "bin": {
+    "cli-comics": "index.js"
+  },
   "devDependencies": {
     "typescript": "^2.3.2"
   },
