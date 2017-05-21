@@ -7,7 +7,10 @@ import {basename, join} from 'path';
 import {writeFileSync} from 'fs';
 
 clear();
-console.log(chalk.yellow(figlet.textSync('cli-comics', {horizontalLayout: 'default', verticalLayout: 'default'})), '\n');
+console.log(
+    chalk.yellow(figlet.textSync('cli-comics', {horizontalLayout: 'default', verticalLayout: 'default'})),
+    chalk.red('[CTRL+C] exit\n')
+);
 
 const PARENT = '../';
 
