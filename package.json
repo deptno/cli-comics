@@ -21,6 +21,7 @@
     "node-zip": "^1.1.1"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepublish": "tsc",
+    "postinstall": "tsc"
   }
 }
