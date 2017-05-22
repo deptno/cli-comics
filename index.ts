@@ -5,6 +5,7 @@ import * as figlet from 'figlet';
 import * as clear from 'clear';
 import {basename, join} from 'path';
 import {writeFileSync} from 'fs';
+import * as bytes from 'bytes';
 
 clear();
 console.log(
@@ -20,7 +21,10 @@ const ls = zangsisi.ls.bind(zangsisi);
 const download = zangsisi.download.bind(zangsisi);
 
 class Cli {
-    static async selectComicsSeries() {
+    private downloadingList = [];
+    private downloadedList = [];
+
+    async selectComicsSeries() {
         cd('/');
         const listComicBookSeries = await ls();
         const answer = await prompt({
@@ -32,41 +36,61 @@ class Cli {
         });
         return answer.name;
     }
-    static async selectComicBook(comicBookSeries) {
+    async selectComicBook(comicBookSeries) {
         cd(join('/', comicBookSeries));
         const comicBooks = await ls();
         const {name} = await prompt({
             type: 'list',
             name: 'name',
             message: '다운로드할 권을 선택',
-            choices: [PARENT, ...comicBooks.map(x => x.title)],
-            pageSize: 30
+            choices: [PARENT, ...comicBooks.map(this.mapChoiceObject.bind(this))],
+            pageSize: 30,
         });
         if (name !== PARENT) {
             cd(name);
-            Cli.download(name);
+            this.download(name);
         }
         cd(PARENT);
         return name;
     }
-    static async download(comicBook) {
-        console.log('downloading: ', comicBook);
+    private mapChoiceObject(book) {
+        const downloading = this.downloadingList.find(downloadingBook => downloadingBook === book.title);
+        const ret = {name: book.title} as any;
+
+        if (downloading) {
+            ret.name = `[받는중] ${ret.name}`;
+            ret.disabled = true;
+        } else {
+            const downloaded = this.downloadedList.find(downloadedBook => downloadedBook.title === book.title);
+            if (downloaded) {
+                ret.name = `[완료: ${bytes(downloaded.bytes, {decimalPlaces: 0})}] ${ret.name}`;
+                ret.disabled = true;
+            }
+        }
+        return ret;
+    }
+    async download(comicBook) {
+        this.downloadingList.push(comicBook);
         try {
-            writeFileSync(`${basename(comicBook).replace(/\s/g, '_')}.zip`, await download(), 'binary');
-            console.log('downloaded: ', comicBook);
+            const buffer = await download();
+            writeFileSync(`${basename(comicBook).replace(/\s/g, '_')}.zip`, buffer, 'binary');
+            this.downloadedList.push({title: comicBook, bytes: buffer.length});
         } catch(ex) {
-            console.error(`download error: `, ex);
+            console.error(`[error] download failed: `, ex);
+        } finally {
+            this.downloadingList.splice(this.downloadingList.indexOf(comicBook), 1);
         }
     }
 }
 
 !async function main() {
+    const cli = new Cli();
     try {
         exit:
         while (true) {
-            const series = await Cli.selectComicsSeries();
+            const series = await cli.selectComicsSeries();
             while (true) {
-                const nextPath = await Cli.selectComicBook(series);
+                const nextPath = await cli.selectComicBook(series);
                 if (nextPath === PARENT) {
                     break;
                 }
