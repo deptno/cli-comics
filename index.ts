@@ -6,11 +6,12 @@ import * as clear from 'clear';
 import {basename, join} from 'path';
 import {writeFileSync} from 'fs';
 import * as bytes from 'bytes';
+import {version} from './package.json';
 
 clear();
 console.log(
     chalk.yellow(figlet.textSync('cli-comics', {horizontalLayout: 'default', verticalLayout: 'default'})),
-    chalk.red('[CTRL+C] exit\n')
+    chalk.red(version)
 );
 
 const PARENT = '../';
