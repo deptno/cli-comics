@@ -4,9 +4,11 @@ import * as chalk from 'chalk';
 import * as figlet from 'figlet';
 import * as clear from 'clear';
 import {basename, join} from 'path';
-import {writeFileSync} from 'fs';
+import {writeFileSync, createWriteStream} from 'fs';
 import * as bytes from 'bytes';
 import {version} from './package.json';
+import * as through from 'through2';
+import * as binstring from 'binstring';
 
 clear();
 console.log(
@@ -73,9 +75,9 @@ class Cli {
     async download(comicBook) {
         this.downloadingList.push(comicBook);
         try {
-            const buffer = await download();
-            writeFileSync(`${basename(comicBook).replace(/\s/g, '_')}.zip`, buffer, 'binary');
-            this.downloadedList.push({title: comicBook, bytes: buffer.length});
+            const filename = `${basename(comicBook).replace(/\s/g, '_')}.zip`;
+            const bytes = await download(filename);
+            this.downloadedList.push({title: comicBook, bytes});
         } catch(ex) {
             console.error(`[error] download failed: `, ex);
         } finally {
