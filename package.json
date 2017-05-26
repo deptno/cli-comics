@@ -1,6 +1,6 @@
 {
   "name": "cli-comics",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "index.js",
   "repository": "https://github.com/deptno/cli-comics.git",
   "author": "deptno@gmail.com",
