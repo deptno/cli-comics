@@ -18,7 +18,7 @@
     "class-zangsisi": "https://github.com/deptno/class-zangsisi",
     "clear": "^0.0.1",
     "figlet": "^1.2.0",
-    "inquirer": "^3.0.6",
+    "inquirer": "^3.0.6"
   },
   "scripts": {
     "prepublish": "tsc"

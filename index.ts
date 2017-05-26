@@ -4,11 +4,8 @@ import * as chalk from 'chalk';
 import * as figlet from 'figlet';
 import * as clear from 'clear';
 import {basename, join} from 'path';
-import {writeFileSync, createWriteStream} from 'fs';
 import * as bytes from 'bytes';
 import {version} from './package.json';
-import * as through from 'through2';
-import * as binstring from 'binstring';
 
 clear();
 console.log(
@@ -51,7 +48,7 @@ class Cli {
         });
         if (name !== PARENT) {
             cd(name);
-            this.download(name);
+            await this.download(name);
         }
         cd(PARENT);
         return name;
@@ -73,15 +70,18 @@ class Cli {
         return ret;
     }
     async download(comicBook) {
-        this.downloadingList.push(comicBook);
         try {
             const filename = `${basename(comicBook).replace(/\s/g, '_')}.zip`;
-            const bytes = await download(filename);
-            this.downloadedList.push({title: comicBook, bytes});
+            await download(filename, bytes => {
+                const index = this.downloadingList.indexOf(comicBook);
+                if (index !== -1) {
+                    this.downloadingList.splice(index, 1);
+                }
+                this.downloadedList.push({title: comicBook, bytes});
+            });
+            this.downloadingList.push(comicBook);
         } catch(ex) {
             console.error(`[error] download failed: `, ex);
-        } finally {
-            this.downloadingList.splice(this.downloadingList.indexOf(comicBook), 1);
         }
     }
 }
