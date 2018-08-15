@@ -1,20 +1,13 @@
 # cli-comics
+[![npm](https://img.shields.io/npm/dt/cli-comics.svg?style=for-the-badge)](https://www.npmjs.com/package/cli-comics)
+> 💔 THIS PROJECT IS NO LONGER MAINTAINED(zangsisi is dead 😇)
 
-```bash
-$ yarn global add cli-comics
-```
-
-or
+![](cli-comics.png)
 
 ```bash
 $ npm -g i cli-comics
-```
-
----
-
-```bash
 $ cli-comics
 ```
 
-
-
+## related
+- https://github.com/deptno/class-zangsisi
